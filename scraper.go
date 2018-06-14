@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/fatih/color"
 )
 
 type action func(i int, item *goquery.Selection)
@@ -31,7 +32,10 @@ func scrape(wg *sync.WaitGroup, url, container string, process action){
 	}
 
 	jobs := doc.Find(container)
+	// Use handy standard colors
+	color.Set(color.FgGreen, color.Bold)
 	fmt.Printf("%d Jobs Found \n", jobs.Length())
+	color.Unset()
 
 	// Find specific info
 	jobs.Each(func(i int, s *goquery.Selection) {
@@ -43,7 +47,9 @@ func main() {
 	
 	findJobName := func(i int, s *goquery.Selection, selector string){
 		job := s.Find(selector).Text()
-		fmt.Printf("Job %d: %s \n", i, job)
+		color.Set(color.FgCyan, color.Bold)
+		fmt.Printf("Job %d: %s \n", i+1, job)
+		color.Unset()
 	}
 	
 	var wg sync.WaitGroup

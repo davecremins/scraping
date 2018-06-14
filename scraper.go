@@ -24,10 +24,15 @@ func main() {
 	if err != nil {
 	  log.Fatal(err)
 	}
-  
-	// Find the jobs
-	doc.Find(".fs-subheading, job-details__spaced, mb4").Each(func(i int, s *goquery.Selection) {
-	  job := s.Find("a").Text()
-	  fmt.Printf("Job %d: %s \n", i, job)
+
+	jobs := doc.Find("div[data-jobid]")
+
+	found := jobs.Length()
+	fmt.Printf("%d Jobs Found \n", found)
+
+	// Find jobs
+	jobs.Each(func(i int, s *goquery.Selection) {
+		job := s.Find("h2 a").Text()
+		fmt.Printf("Job %d: %s \n", i, job)
 	})
 }

@@ -11,6 +11,9 @@ import (
 )
 
 type action func(i int, item *goquery.Selection)
+type SiteData struct {
+	url, jobsSelector, jobName string
+}
 
 func scrape(wg *sync.WaitGroup, url, container string, process action){
 	defer wg.Done()
@@ -46,27 +49,29 @@ func scrape(wg *sync.WaitGroup, url, container string, process action){
 func main() {
 	
 	findJobName := func(i int, s *goquery.Selection, selector string){
-		job := s.Find(selector).Text()
+		job := s.Find(selector).First().Text()
 		color.Set(color.FgCyan, color.Bold)
 		fmt.Printf("Job %d: %s \n", i+1, job)
 		color.Unset()
 	}
 	
+	
+	sites := [] *SiteData{
+		&SiteData{"https://weworkremotely.com/categories/remote-programming-jobs", "article ul li", "span.title"},
+		&SiteData{"https://stackoverflow.com/jobs?r=true&j=permanent", "div[data-jobid]", "h2 a"},
+		&SiteData{"https://remoteok.io/remote-dev-jobs", "tbody tr[id]", "a h2"},
+	}
+	
 	var wg sync.WaitGroup
-	wg.Add(3)
-        
-	go scrape(&wg, "https://weworkremotely.com/categories/remote-programming-jobs", "article ul li", func(i int, s *goquery.Selection){
-		findJobName(i, s, "span.title")
-	})
+	wg.Add(len(sites))
 	
-	
-	go scrape(&wg, "https://stackoverflow.com/jobs?r=true&j=permanent", "div[data-jobid]", func(i int, s *goquery.Selection){
-		findJobName(i, s, "h2 a")
-	})
-
-	go scrape(&wg, "https://remoteok.io/remote-dev-jobs", "tbody tr[id]", func(i int, s *goquery.Selection){
-		findJobName(i, s, "a h2")
-	})
+	for _, site := range sites {
+		go scrape(&wg, site.url, site.jobsSelector, func(s *SiteData) action {
+			return func(i int, item *goquery.Selection) {
+				findJobName(i, item, s.jobName)
+			}
+		}(site))
+	}
 	
 	wg.Wait()
 }

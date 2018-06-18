@@ -37,7 +37,7 @@ func scrape(wg *sync.WaitGroup, url, container string, process action){
 	jobs := doc.Find(container)
 	// Use handy standard colors
 	color.Set(color.FgGreen, color.Bold)
-	fmt.Printf("%d Jobs Found \n", jobs.Length())
+	fmt.Printf("%d Jobs found from %s \n", jobs.Length(), url)
 	color.Unset()
 
 	// Find specific info
@@ -51,7 +51,7 @@ func main() {
 	findJobName := func(i int, s *goquery.Selection, selector string){
 		job := s.Find(selector).First().Text()
 		color.Set(color.FgCyan, color.Bold)
-		fmt.Printf("Job %d: %s \n", i+1, job)
+		fmt.Printf("\tJob %d: %s \n", i+1, job)
 		color.Unset()
 	}
 	
@@ -60,6 +60,9 @@ func main() {
 		&SiteData{"https://weworkremotely.com/categories/remote-programming-jobs", "article ul li", "span.title"},
 		&SiteData{"https://stackoverflow.com/jobs?r=true&j=permanent", "div[data-jobid]", "h2 a"},
 		&SiteData{"https://remoteok.io/remote-dev-jobs", "tbody tr[id]", "a h2"},
+		&SiteData{"https://www.workingnomads.co/jobs?category=development", "#jobs div.job", "a h2"},
+		&SiteData{"https://jobspresso.co/remote-software-jobs/", "div.job_listings ul.job_listings li", "a"},
+		
 	}
 	
 	var wg sync.WaitGroup

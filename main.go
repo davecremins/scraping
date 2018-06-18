@@ -9,12 +9,12 @@ import (
 
 type SiteData struct {
 	Url string `yaml:"site"`
-	JobsSelector string `yaml:"job_listings"`
-	JobName string `yaml:"job_title"`
+	JobsSelector string `yaml:"jobListings"`
+	JobName string `yaml:"jobTitle"`
 }
 
 type Config struct {
-	Sites [] *SiteData `yaml:"site_info"`
+	Sites [] *SiteData `yaml:"siteInfo"`
  }
 
 func main() {

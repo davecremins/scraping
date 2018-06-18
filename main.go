@@ -3,7 +3,6 @@ package main
 import (
 	"sync"
 	"io/ioutil"
-	"fmt"
 
 	"gopkg.in/yaml.v2"
 )
@@ -25,18 +24,14 @@ func main() {
         panic(err)
 	}
 	
-	fmt.Printf("File length: %d\n", len(yamlFile))
-
-    var config Config
+	var config Config
 
     err = yaml.Unmarshal(yamlFile, &config)
     if err != nil {
         panic(err)
     }
 
-    fmt.Printf("Len: %d\n", len(config.Sites))
-
-	var wg sync.WaitGroup
+    var wg sync.WaitGroup
 	wg.Add(len(config.Sites))
 	
 	for _, site := range config.Sites {

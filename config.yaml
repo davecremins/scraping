@@ -1,0 +1,22 @@
+---
+site_info:
+  - 
+    job_listings: 'article ul li'
+    job_title: 'span.title'
+    site: 'https://weworkremotely.com/categories/remote-programming-jobs'
+  - 
+    job_listings: 'div[data-jobid]'
+    job_title: 'h2 a'
+    site: 'https://stackoverflow.com/jobs?r=true&j=permanent'
+  - 
+    job_listings: 'tbody tr[id]'
+    job_title: 'a h2'
+    site: 'https://remoteok.io/remote-dev-jobs'
+  - 
+    job_listings: '#jobs div.job'
+    job_title: 'a h2'
+    site: 'https://www.workingnomads.co/jobs?category=development'
+  - 
+    job_listings: 'div.job_listings ul.job_listings li'
+    job_title: 'a'
+    site: 'https://jobspresso.co/remote-software-jobs/'

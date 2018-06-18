@@ -15,7 +15,6 @@ func main() {
 		&SiteData{"https://remoteok.io/remote-dev-jobs", "tbody tr[id]", "a h2"},
 		&SiteData{"https://www.workingnomads.co/jobs?category=development", "#jobs div.job", "a h2"},
 		&SiteData{"https://jobspresso.co/remote-software-jobs/", "div.job_listings ul.job_listings li", "a"},
-		
 	}
 	
 	var wg sync.WaitGroup

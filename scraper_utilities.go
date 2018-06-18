@@ -12,7 +12,14 @@ import (
 
 type action func(i int, item *goquery.Selection)
 
-func scrape(wg *sync.WaitGroup, url, container string, process action){
+func findName(i int, s *goquery.Selection, nameSelector string){
+	name := s.Find(nameSelector).First().Text()
+	color.Set(color.FgCyan, color.Bold)
+	fmt.Printf("\t%d): %s \n", i+1, name)
+	color.Unset()
+}
+
+func scrape(wg *sync.WaitGroup, url, container, itemName string){
 	defer wg.Done()
 	
 	// Request the HTML page.
@@ -31,14 +38,16 @@ func scrape(wg *sync.WaitGroup, url, container string, process action){
 	  log.Fatal(err)
 	}
 
-	jobs := doc.Find(container)
+	items := doc.Find(container)
 	// Use handy standard colors
 	color.Set(color.FgGreen, color.Bold)
-	fmt.Printf("%d Jobs found from %s \n", jobs.Length(), url)
+	fmt.Printf("%d items found from %s \n", items.Length(), url)
 	color.Unset()
 
 	// Find specific info
-	jobs.Each(func(i int, s *goquery.Selection) {
-		process(i, s)
+	items.Each(func(i int, s *goquery.Selection) {
+		findName(i, s, itemName)
 	})
+
+	fmt.Println()
 }

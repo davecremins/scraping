@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-  	"sync"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/fatih/color"
+	"sync"
 )
 
 type SiteData struct {
@@ -13,15 +9,6 @@ type SiteData struct {
 }
 
 func main() {
-	
-	findJobName := func(i int, s *goquery.Selection, selector string){
-		job := s.Find(selector).First().Text()
-		color.Set(color.FgCyan, color.Bold)
-		fmt.Printf("\tJob %d: %s \n", i+1, job)
-		color.Unset()
-	}
-	
-	
 	sites := [] *SiteData{
 		&SiteData{"https://weworkremotely.com/categories/remote-programming-jobs", "article ul li", "span.title"},
 		&SiteData{"https://stackoverflow.com/jobs?r=true&j=permanent", "div[data-jobid]", "h2 a"},
@@ -35,11 +22,7 @@ func main() {
 	wg.Add(len(sites))
 	
 	for _, site := range sites {
-		go scrape(&wg, site.url, site.jobsSelector, func(s *SiteData) action {
-			return func(i int, item *goquery.Selection) {
-				findJobName(i, item, s.jobName)
-			}
-		}(site))
+		go scrape(&wg, site.url, site.jobsSelector, site.jobName)
 	}
 	
 	wg.Wait()

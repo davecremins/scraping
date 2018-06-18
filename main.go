@@ -2,26 +2,45 @@ package main
 
 import (
 	"sync"
+	"io/ioutil"
+	"fmt"
+
+	"gopkg.in/yaml.v2"
 )
 
 type SiteData struct {
-	url, jobsSelector, jobName string
+	Url string `yaml:"site"`
+	JobsSelector string `yaml:"job_listings"`
+	JobName string `yaml:"job_title"`
 }
 
+type Config struct {
+	Sites [] *SiteData `yaml:"site_info"`
+ }
+
 func main() {
-	sites := [] *SiteData{
-		&SiteData{"https://weworkremotely.com/categories/remote-programming-jobs", "article ul li", "span.title"},
-		&SiteData{"https://stackoverflow.com/jobs?r=true&j=permanent", "div[data-jobid]", "h2 a"},
-		&SiteData{"https://remoteok.io/remote-dev-jobs", "tbody tr[id]", "a h2"},
-		&SiteData{"https://www.workingnomads.co/jobs?category=development", "#jobs div.job", "a h2"},
-		&SiteData{"https://jobspresso.co/remote-software-jobs/", "div.job_listings ul.job_listings li", "a"},
+	yamlFile, err := ioutil.ReadFile("config.yaml")
+
+    if err != nil {
+        panic(err)
 	}
 	
+	fmt.Printf("File length: %d\n", len(yamlFile))
+
+    var config Config
+
+    err = yaml.Unmarshal(yamlFile, &config)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf("Len: %d\n", len(config.Sites))
+
 	var wg sync.WaitGroup
-	wg.Add(len(sites))
+	wg.Add(len(config.Sites))
 	
-	for _, site := range sites {
-		go scrape(&wg, site.url, site.jobsSelector, site.jobName)
+	for _, site := range config.Sites {
+		go scrape(&wg, site.Url, site.JobsSelector, site.JobName)
 	}
 	
 	wg.Wait()

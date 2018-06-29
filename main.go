@@ -14,17 +14,17 @@ type SiteData struct {
 }
 
 type Config struct {
-	Sites [] *SiteData `yaml:"siteInfo"`
+	Sites []*SiteData `yaml:"siteInfo"`
  }
 
 func main() {
-	yamlFile, err := ioutil.ReadFile("config.yaml")
+    yamlFile, err := ioutil.ReadFile("config.yaml")
 
     if err != nil {
         panic(err)
-	}
-	
-	var config Config
+    }
+
+    var config Config
 
     err = yaml.Unmarshal(yamlFile, &config)
     if err != nil {
@@ -32,11 +32,10 @@ func main() {
     }
 
     var wg sync.WaitGroup
-	wg.Add(len(config.Sites))
-	
-	for _, site := range config.Sites {
-		go scrape(&wg, site.Url, site.JobsSelector, site.JobName)
-	}
-	
-	wg.Wait()
+    wg.Add(len(config.Sites))
+
+    for _, site := range config.Sites {
+        go scrape(&wg, site.Url, site.JobsSelector, site.JobName)
+    }
+    wg.Wait()
 }
